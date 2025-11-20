@@ -1,0 +1,25 @@
+{
+  "name": "spiral-sounds",
+  "version": "1.0.0",
+  "description": "Online classic vinyl store",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheLLmjourney/spiral_sounds.git"
+  },
+  "author": "Atharv",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TheLLmjourney/spiral_sounds/issues"
+  },
+  "homepage": "https://github.com/TheLLmjourney/spiral_sounds#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}
