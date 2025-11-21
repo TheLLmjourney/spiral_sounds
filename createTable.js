@@ -13,7 +13,7 @@ async function createTable() {
     CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
-    arists TEXT NOT NULL,
+    artist TEXT NOT NULL,
     price REAL NOT NULL,
     image TEXT NOT NULL,
     year INTEGER,
@@ -21,18 +21,10 @@ async function createTable() {
     stock INTEGER
     )`
   )
-  console.log('Table created!')
 
-  try {
-    const products = await db.all('SELECT * FROM products')
-    console.table(products)
-  }
-  catch (error) {
-    console.log(`Error fetching products: ${error.message}`)
-  }
-  finally {
-    await db.close()
-  }
+  await db.close()
+
+  console.log('Table created!')
 }
 
 createTable()

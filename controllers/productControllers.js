@@ -1,7 +1,22 @@
-export async function getProducts() {
+import { getDBConnection } from '../db/db.js'
+
+export async function getProducts(req, res) {
   console.log('Products')
+  res.json([])
 }
 
-export async function getGenres() {
-  console.log('Genres')
+
+export async function getGenres(req, res) {
+  try {
+    const db = await getDBConnection()
+    const genreRows = await db.all(`SELECT DISTINCT genre FROM products`)
+    const genres = genreRows.map(row => row.genre)
+    res.json(genres)
+  }
+  catch (err) {
+    res.status(500).json({error: 'Failed to fetch genres', details: err.message})
+
+  }
 }
+
+
