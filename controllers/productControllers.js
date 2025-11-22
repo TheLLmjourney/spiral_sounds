@@ -1,8 +1,41 @@
 import { getDBConnection } from '../db/db.js'
 
 export async function getProducts(req, res) {
-  console.log('Products')
-  res.json([])
+  try {
+    const db = await getDBConnection()
+    
+    const genreParam = req.query.genre
+
+    let query = `SELECT * FROM products`
+    let params = []
+
+    if (genreParam) {
+      query += ` WHERE genre = ?`
+      params.push(genreParam)
+    }
+
+    const searchParam = req.query.search
+
+    if (searchParam) {
+      query += ` WHERE title LIKE ?
+                    OR genre LIKE ?
+                    OR artist LIKE ?`
+
+      const searchPattern = `%${searchParam}%`
+      
+      params.push(searchPattern)
+      params.push(searchPattern)
+      params.push(searchPattern)
+    }
+
+    const products = await db.all(query, params)
+    
+    res.json(products)
+    
+  }
+  catch (err) {
+    res.json({error: 'Failed to fetch products', details: err.message})
+  }
 }
 
 
