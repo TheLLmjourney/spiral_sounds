@@ -42,6 +42,7 @@
 
 import validator from 'validator'
 import { getDBConnection } from '../db/db.js'
+import bcrypt from 'bcryptjs'
 
 export async function registerUser(req, res) {
 
@@ -73,6 +74,8 @@ export async function registerUser(req, res) {
 
   try {
 
+    const hashedPassword = await bcrypt.hash(password, 10)
+
     const db = await getDBConnection()
     
     const searchUserQuery = `SELECT * FROM users WHERE email = ? OR username = ?;`
@@ -88,9 +91,9 @@ export async function registerUser(req, res) {
     else {
       const addUserQuery = `INSERT INTO users (name, email, username, password) 
                             VALUES (?, ?, ?, ?)`
-      const userParams = [name, email, username, password]
+      const userParams = [name, email, username, hashedPassword]
 
-      await db.run(addUserQuery, userParams)
+      const result = await db.run(addUserQuery, userParams)
     
       // const result = await db.run('INSERT INTO users (name, email, username, password) VALUES (?, ?, ?, ?)', [name, email, username, password])
 
