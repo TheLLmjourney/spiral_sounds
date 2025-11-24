@@ -94,32 +94,55 @@ export async function registerUser(req, res) {
       const userParams = [name, email, username, hashedPassword]
 
       const result = await db.run(addUserQuery, userParams)
+
+      req.session.userId = result.lastID
     
       // const result = await db.run('INSERT INTO users (name, email, username, password) VALUES (?, ?, ?, ?)', [name, email, username, password])
 
       return res.status(201).json({message: 'User registered successfully.'})
     }
-/*
-Challenge:
-1. Check if the username or email address has already been used.
-    - If it has, end the response with a suitable status code and this object:
-      { error: 'Email or username already in use.' }.
-
-    - If the username and email address are unique in the database, add the user to the table and send this JSON { message: 'User registered'}. Which status code should you use?
-
-- When you have been successful, the mini browser will redirect to the homepage.
-
-- Run logTable.js to check you have created a user. 
-
-- You will be able to see the password in the db! We will fix that later!
-*/
 
   } catch (err) {
 
     console.error('Registration error:', err.message);
     res.status(500).json({ error: 'Registration failed. Please try again.' })
-
   }
-
-
 }
+
+
+
+
+export async function loginUser(req, res) {
+
+  try {
+    const db = await getDBConnection()
+
+    let { username, password } = req.body
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'All fields are required' })
+    }
+
+    username = username.trim()
+
+    const user = await db.get(`SELECT * FROM users WHERE username = ?`,[username])
+
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid Credentials' })
+    }
+    
+    const userExists = await bcrypt.compare(password, user.password)
+    
+    if (userExists) {
+        req.session.userId = user.id
+        return res.json({ message: 'Logged in'})
+      }
+    return res.status(401).json({ error: 'Invalid Credentials' })
+
+
+  } catch (err) {
+    console.error('Login error:', err.message)
+    res.status(500).json({ error: 'Login failed. Please try again.' })
+  }
+}
+
