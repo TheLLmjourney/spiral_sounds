@@ -146,3 +146,13 @@ export async function loginUser(req, res) {
   }
 }
 
+export async function logoutUser(req, res) {
+  req.session.destroy(err => {
+    if (err) {
+      console.log('Session destruction error', err)
+      return res.status(500).json({ message: 'Logut failed', error: err.message })
+    }
+    res.json({ message: 'Logged out successfully '})
+    // res.clearCookie('connect.sid')
+  })   
+}
