@@ -31,7 +31,7 @@ const MAX_COLUMN_LENGTH = 30
 async function logTable() {
   const db = await getDBConnection()
 
-  const tableName = 'users'
+  const tableName = 'cart_items'
 
   try {
     const table = await db.all(`SELECT * FROM ${tableName}`)
